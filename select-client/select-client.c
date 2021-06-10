@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
     // IPv4 Internet protocols and TCP
     int sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (sockfd < 0)
-        handle_error("[-] Failed to create a socket");
+        handle_error("[-] Fail to create a socket");
 
     // Build a socket
     struct sockaddr_in addr;
@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
     if (res < 0)
     {
         close(sockfd);
-        handle_error("[-] Failed to connect");
+        handle_error("[-] Fail to connect");
     }
     printf("[+] Connected\n");
 
@@ -109,7 +109,7 @@ int main(int argc, char *argv[])
                 if (sent_len < 0)
                 {
                     close(sockfd);
-                    handle_error("[-] Failed to send a user's message");
+                    handle_error("[-] Fail to send a user's message");
                 }
             }
             // If socket ready
@@ -121,7 +121,12 @@ int main(int argc, char *argv[])
                 if (received_len < 0)
                 {
                     close(sockfd);
-                    handle_error("[-] Failed to recieve a echoed message");
+                    handle_error("[-] Fail to recieve a echoed message");
+                }
+                if (!received_len)
+                {
+                    close(sockfd);
+                    handle_error("[-] Closed");
                 }
                 printf("%s\n", echoed_mes);
             }
