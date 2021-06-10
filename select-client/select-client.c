@@ -79,6 +79,7 @@ int main(int argc, char *argv[])
     FD_ZERO(&init_read_set);
     FD_SET(0, &init_read_set);      // for stdin
     FD_SET(sockfd, &init_read_set); // for socket
+    int max_fd = sockfd;
 
     while (1)
     {

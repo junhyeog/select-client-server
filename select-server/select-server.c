@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
     if (sockfd < 0)
         handle_error("[-] Fail to create a socket");
 
-    // Build a socket address
+    // Build a socket
     struct sockaddr_in addr;
     addr.sin_family = AF_INET;
     addr.sin_port = htons(port_num);
@@ -83,22 +83,18 @@ int main(int argc, char *argv[])
     FD_ZERO(&init_read_set);
     FD_SET(sockfd, &init_read_set); // for welcome socket
     int max_fd = sockfd;
+
     while (1)
     {
         read_set = init_read_set;
 
-        //소켓 포함 모든 파일디스크립터를 대상으로 '수신된 데이터의 존재여부' 검사
+        // Check
         res = select(max_fd + 1, &read_set, NULL, NULL, NULL);
         // If error,
         if (res < 0)
         {
             perror("[-] Fail to select\n");
             break;
-        }
-        // If timeout,
-        if (!res)
-        {
-            continue;
         }
         for (int i = 0; i < max_fd + 1; i++)
         {
@@ -111,7 +107,7 @@ int main(int argc, char *argv[])
                 // Update init_read_set and max_fd
                 FD_SET(client_sockfd, &init_read_set);
                 max_fd = max_fd > client_sockfd ? max_fd : client_sockfd;
-                printf("[+] Client connected: %d\n", client_sockfd);
+                printf("[+] Client(%d) connected\n", client_sockfd);
             }
             else
             {
@@ -135,7 +131,7 @@ int main(int argc, char *argv[])
                 {
                     FD_CLR(i, &init_read_set);
                     close(i);
-                    printf("[+] Closed client(%d)\n", i);
+                    printf("[+] Client(%d) closed\n", i);
                     continue;
                 }
                 printf("[+] Echo to client(%d) : %s\n", i, mes);
@@ -148,5 +144,5 @@ int main(int argc, char *argv[])
             continue;
         close(i);
     }
-    exit(EXIT_SUCCESS);
+    exit(EXIT_FAILURE);
 }
